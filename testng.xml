@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="testsuites.TestPlanets" thread-count="1" parallel="methods">
+
+    <listeners>
+        <listener class-name="base.TestListener"/>
+    </listeners>
+
+    <test name="Acceptance Test">
+        <parameter name="statusCode" value="200"/>
+        <parameter name="contentType" value="application/json"/>
+        <parameter name="json_key_planets" value="planets"/>
+        <parameter name="json_key_planet" value="planet1"/>
+        <parameter name="json_planets_count" value="61"/>
+        <classes>
+            <class name="testsuites.TestPlanets"/>
+            <class name="testsuites.TestPlanet"/>
+        </classes>
+    </test>
+
+</suite>
