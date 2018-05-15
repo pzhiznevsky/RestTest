@@ -18,8 +18,6 @@ public class TestBase {
 
     @BeforeClass
     public void setup() {
-        System.setProperty("https.proxyHost", "149.28.133.203");
-        System.setProperty("https.proxyPort", "8080");
         RestAssured.baseURI = "https://swapi.co/api/";
         log.info("Base URI: " + RestAssured.baseURI);
         TestData.readTestData();
