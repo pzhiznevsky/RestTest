@@ -2,75 +2,59 @@ package testsuites;
 
 import base.TestBase;
 import objects.BaseObject.TYPE;
-import objects.Planet;
-import org.testng.Assert;
+import objects.Planets;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import utils.Utils;
 
+import java.util.Random;
+
 public class TestPlanet extends TestBase {
+
+    private static int rand;
 
     @BeforeClass
     public void beforeClass() {
-        get("/planets/1");
-        baseObject = Utils.getFromJson(TYPE.Planet, getResponse());
-        log.info(TYPE.Planet.toString() + ": "+baseObject);
-    }
-
-    @Test
-    @Parameters("statusCode")
-    public void verifyStatusCode(String statusCode){
-        int code = getStatusCode();
-        Assert.assertEquals(code, Integer.parseInt(statusCode),"Status code is not as expected!");
-        log.info("Expected Status code was found: " + code);
-    }
-
-    @Test(dependsOnMethods = "verifyStatusCode")
-    @Parameters("contentType")
-    public void verifyContentType(String contentType){
-        String cType = getContentType();
-        Assert.assertEquals(cType, contentType,"Content Type is not as expected!");
-        log.info("Expected Content Type was found: " + cType);
-    }
-
-    @Test(dependsOnMethods = "verifyContentType")
-    @Parameters("json_key_planet")
-    public void verifyObjects(String key){
-        Planet planet = new Planet(key);
-        Assert.assertEquals(baseObject, planet,"Objects are NOT the same!");
-        log.info("Expected object was found: " + planet);
-    }
-
-    @DataProvider(name = "Planet")
-    public static Object[][] planet() {
-        return new Object[][] { { "1", "planet1", "" }, { "2", "planet2", "" }, { "3", "planet3", "" }, { "4", "planet4", "" },
-                { "5", "planet5", "" }, { "6", "planet6", "" }, { "7", "planet7", "" }, { "8", "planet8", "" },
-                { "9", "planet9", "" }, { "10", "planet10", "" }, { "11", "planet11", "" }, { "12", "planet12", "" },
-                { "13", "planet13", "" }, { "14", "planet14", "" }, { "15", "planet15", "" }, { "0", "", "Not found" },
-                { "10000", "", "Not found" }, { "a", "", "Not found" }};
-    }
-
-    @Test(dataProvider = "Planet", dependsOnMethods = "verifyObjects")
-    public void getPlanetById(String id, String key, String errorMessage){
-        get("/planets/" + id);
-        Planet planet = null;
-        Planet expectedPlanet = null;
-
-        if(Utils.isNull(errorMessage)){
-            planet = (Planet) Utils.getFromJson(TYPE.Planet, getResponse());
-            if(!Utils.isNull(key)){
-                expectedPlanet = new Planet(key);
-                log.info(TYPE.Planet.toString() + ": "+planet);
-            } else{
-                log.exception("Unable to create Planet with empty key!");
-            }
-            Assert.assertEquals(expectedPlanet, planet, "Unexpected planet!");
-            log.info("Expected object was found by id " + id);
-        } else {
-            Assert.assertTrue(getResponse().contains(errorMessage), "Error message " + errorMessage + " was NOT found in the response!");
-            log.info("Error message " + errorMessage + " was found");
+        if(Utils.isNull(TestPlanets.planetCount)){
+            get("/planets");
+            baseObject = Utils.getFromJson(TYPE.Planets, getResponse());
+            if(baseObject != null)
+                TestPlanets.planetCount = ((Planets) baseObject).getCount();
         }
+        //The rand value is supposed to get in a range [2..PlanetCount-1],
+        // however in this case we have to place all the objects in data.json.
+        // I placed just 15 planets and will take the rand value in range [2..15]
+        //rand = new Random().nextInt(Integer.valueOf(TestPlanets.planetCount))+1;
+        rand = new Random().nextInt(14)+2;
+    }
+
+    @DataProvider(name = "PlanetPositive")
+    public static Object[][] planetPositive() {
+        return new Object[][] {
+                { String.valueOf(rand), "planet"+rand},
+                { "1", "planet1"},
+                { "61", "planet61"}
+        };
+    }
+
+    @Test(groups = {"Positive", "P1"}, dataProvider = "PlanetPositive", alwaysRun = true)
+    public void verifyPlanetPositive(String id, String key){
+        verifyObjectPositive("/planets/" + id, key, TYPE.Planet);
+    }
+
+    @DataProvider(name = "PlanetNegative")
+    public static Object[][] planetNegativeP2() {
+        return new Object[][] {
+                { "0" },
+                { "10000" },
+                { "a" }
+        };
+    }
+
+    @Test(groups = {"Negative", "P2"}, dataProvider = "PlanetNegative", dependsOnGroups = "Positive", alwaysRun = true)
+    public void verifyPlanetNegative(String id){
+        verifyObjectNegative("/planets/" + id);
     }
 }
+

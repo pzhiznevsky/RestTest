@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="TestSWAPI.TestPlanets">
+    <test name="Acceptance Test Planets">
+        <parameter name="page" value="/planets"/>
+        <parameter name="key" value="planets"/>
+        <parameter name="pageNegative" value="/!planets"/>
+        <parameter name="keyNegative" value="HTML"/>
+        <parameter name="bodyNegative" value="This is not the page you are looking for."/>
+        <classes>
+            <class name="testsuites.TestPlanets"/>
+        </classes>
+    </test>
+</suite>

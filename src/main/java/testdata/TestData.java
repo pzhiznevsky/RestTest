@@ -50,7 +50,7 @@ public class TestData {
 
     public Object getTestData(String key, TYPE type){
         Type typeToken = createType(type);
-        List<JsonData> list = gson.fromJson(this.testData, typeToken);
+        List<JsonData> list = gson.fromJson(TestData.testData, typeToken);
         Map map = createMap(type);
         for(JsonData jsonData: list){
             map.put(jsonData.getName(), jsonData.getObject());

@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="testsuites.TestPlanets" thread-count="1" parallel="methods">
-
+<suite name="TestSWAPI" thread-count="10" parallel="classes">
     <listeners>
         <listener class-name="base.TestListener"/>
     </listeners>
 
-    <test name="Acceptance Test">
-        <parameter name="statusCode" value="200"/>
-        <parameter name="contentType" value="application/json"/>
-        <parameter name="json_key_planets" value="planets"/>
-        <parameter name="json_key_planet" value="planet1"/>
-        <parameter name="json_planets_count" value="61"/>
-        <classes>
-            <class name="testsuites.TestPlanets"/>
-            <class name="testsuites.TestPlanet"/>
-        </classes>
-    </test>
+    <parameter name="statusCode" value="200"/>
+    <parameter name="responseNotFound" value="{&quot;detail&quot;:&quot;Not found&quot;}"/>
+    <parameter name="contentType" value="application/json"/>
 
+    <suite-files>
+        <suite-file path="src/test/resources/TestPlanets.xml"></suite-file>
+        <suite-file path="src/test/resources/TestPlanet.xml"></suite-file>
+    </suite-files>
 </suite>

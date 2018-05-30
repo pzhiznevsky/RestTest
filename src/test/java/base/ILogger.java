@@ -1,21 +1,21 @@
 package base;
 
 public interface ILogger {
-    public static interface Severity {
-        final static int EXCEPTION = 0;
+    interface Severity {
+        int EXCEPTION = 0;
 
-        final static int WARNING = 2;
+        int WARNING = 2;
 
-        final static int INFO = 3;
+        int INFO = 3;
 
-        final static int PERFORMANCE = 4;
+        int PERFORMANCE = 4;
 
-        final static int DEBUG = 5;
+        int DEBUG = 5;
 
-        final static int ALL = Integer.MAX_VALUE;
+        int ALL = Integer.MAX_VALUE;
     }
 
-    public interface IEntry {
+    interface IEntry {
         int getSeverity();
 
         String getMessage();
